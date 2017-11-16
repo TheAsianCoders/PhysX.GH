@@ -23,7 +23,7 @@ namespace PhysX.GH.GrasshopperComponents
             : base(
                 "PX Simulate",
                 "PX Simulate",
-                "Description",
+                "PhysX Simulation Solver",
                 "PhysX",
                 "PhysX")
         {
@@ -33,11 +33,10 @@ namespace PhysX.GH.GrasshopperComponents
 
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Rigid Statics", "Rigid Statics", "Rigid Statics", GH_ParamAccess.list);
-            pManager.AddGenericParameter("Rigid Dynamics", "Rigid Dynamics", "Rigid Dynamics", GH_ParamAccess.list);
+            pManager.AddGenericParameter("Rigid Bodies", "Rigid Bodies", "Rigid Bodies", GH_ParamAccess.list);
             pManager.AddVectorParameter("Gravity", "Gravity", "Gravity", GH_ParamAccess.item, new Vector3d(0.0, 0.0, -9.8));
             pManager.AddNumberParameter("Timestep", "Timestep", "Timestep", GH_ParamAccess.item, 0.01);
-            pManager.AddIntegerParameter("Steps", "Steps", "Steps", GH_ParamAccess.item, 10);        
+            pManager.AddIntegerParameter("Steps", "Steps", "Steps", GH_ParamAccess.item, 10);
             pManager.AddBooleanParameter("Reset", "Reset", "Reset", GH_ParamAccess.item, true);
             pManager.AddBooleanParameter("Run", "Run", "Run", GH_ParamAccess.item, false);
 
@@ -71,19 +70,23 @@ namespace PhysX.GH.GrasshopperComponents
             {
                 system = new GhPxSystem();
 
-                var iRigidStatics = new List<PxGhRigidStatic>();
-                var iRigidDynamics = new List<PxGhRigidDynamic>();
-                DA.GetDataList("Rigid Statics", iRigidStatics);
-                DA.GetDataList("Rigid Dynamics", iRigidDynamics);
+                var iRigidBodies = new List<PxGhRigidBody>();
+                DA.GetDataList("Rigid Bodies", iRigidBodies);
 
-                foreach (PxGhRigidDynamic o in iRigidDynamics)
-                {       
-                    system.AddRigidDynamic(o);
-                    o.Reset();
+                foreach (PxGhRigidBody o in iRigidBodies)
+                {
+                    if (o is PxGhRigidDynamic)
+                    {
+                        PxGhRigidDynamic d = o as PxGhRigidDynamic;
+                        system.AddRigidDynamic(d);
+                        d.Reset();
+                    }
+                    else if (o is PxGhRigidStatic)
+                    {
+                        PxGhRigidStatic s = o as PxGhRigidStatic;
+                        system.AddRigidStatic(s);
+                    }
                 }
-
-                foreach (PxGhRigidStatic o in iRigidStatics)
-                    system.AddRigidStatic(o);
 
                 staticGhMeshes = system.GetRigidStaticDisplayGhMeshes();
             }
