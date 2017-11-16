@@ -9,8 +9,8 @@ using Rhino.Geometry;
 
 namespace PhysX.GH.Kernel
 {
-    public abstract class PxGhRigidStatic : PxGhRigidBody
+    public abstract class PxGhRigidBody
     {
-        internal RigidStatic actor;
+        public abstract void GetDisplayGhMeshes(List<GH_Mesh> ghMeshes);
     }
 }

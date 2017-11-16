@@ -10,13 +10,12 @@ using Rhino.Geometry;
 
 namespace PhysX.GH.Kernel
 {
-    public abstract class PxGhRigidDynamic
+    public abstract class PxGhRigidDynamic : PxGhRigidBody
     {
         internal RigidDynamic actor;
         internal Matrix4x4 initialGlobalPose;
         internal Vector3 initialLinearVelocity = Vector3.Zero;
         internal Vector3 initialAngularVelocity = Vector3.Zero;
-        public abstract void GetDisplayGhMeshes(List<GH_Mesh> ghMeshes);
 
         public void Reset()
         {
