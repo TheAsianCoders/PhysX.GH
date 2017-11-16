@@ -33,7 +33,7 @@ namespace PhysX.GH.GrasshopperComponents
 
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Rigid Bodies", "Rigid Bodies", "Rigid Bodies", GH_ParamAccess.list);
+            pManager.AddGenericParameter("Rigid Bodies", "Rigid Bodies", "Rigid Bodies", GH_ParamAccess.tree);
             pManager.AddVectorParameter("Gravity", "Gravity", "Gravity", GH_ParamAccess.item, new Vector3d(0.0, 0.0, -9.8));
             pManager.AddNumberParameter("Timestep", "Timestep", "Timestep", GH_ParamAccess.item, 0.01);
             pManager.AddIntegerParameter("Steps", "Steps", "Steps", GH_ParamAccess.item, 10);
@@ -70,8 +70,9 @@ namespace PhysX.GH.GrasshopperComponents
             {
                 system = new GhPxSystem();
 
-                var iRigidBodies = new List<PxGhRigidBody>();
-                DA.GetDataList("Rigid Bodies", iRigidBodies);
+                List<PxGhRigidBody> iRigidBodies = new List<PxGhRigidBody>();
+                foreach (GH_ObjectWrapper flatten in Params.Input[0].VolatileData.AllData(true))
+                    iRigidBodies.Add((PxGhRigidBody)flatten.Value);
 
                 foreach (PxGhRigidBody o in iRigidBodies)
                 {
