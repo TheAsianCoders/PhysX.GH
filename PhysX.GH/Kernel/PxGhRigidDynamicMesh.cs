@@ -37,7 +37,7 @@ namespace PhysX.GH.Kernel
             }
 
             ConvexMeshDesc convexMeshDescription = new ConvexMeshDesc();
-            //convexMeshDescription.Flags = ConvexFlag.ComputeConvex;
+            convexMeshDescription.Flags = ConvexFlag.ComputeConvex;
             convexMeshDescription.SetPositions(points.ToArray());
             convexMeshDescription.SetTriangles(faceVertexIndices.ToArray());
 

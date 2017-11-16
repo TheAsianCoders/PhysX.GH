@@ -47,12 +47,7 @@ namespace PhysX.GH.GrasshopperComponents
             DA.GetData(1, ref isDynamic);
             DA.GetData(2, ref iMaterial);
 
-            iMesh.Faces.ConvertQuadsToTriangles();
-            PxGhRigidDynamic dynamic = new PxGhRigidDynamicMesh(Plane.WorldXY, iMesh, iMaterial, 1);
-
-
-            DA.SetData(0, dynamic);
-
+            //iMesh.Faces.ConvertQuadsToTriangles();
 
             PxGhRigidDynamic rigidDynamic = new PxGhRigidDynamicMesh(Plane.WorldXY, iMesh, iMaterial, 1);
             DA.SetData(0, rigidDynamic);
