@@ -15,9 +15,9 @@ using Plane = Rhino.Geometry.Plane;
 
 namespace PhysX.GH.GrasshopperComponents
 {
-    public class GhcPhysXDynamicSphere : GH_Component
+    public class GhcPhysXSphere : GH_Component
     {
-        public GhcPhysXDynamicSphere()
+        public GhcPhysXSphere()
           : base("PX Sphere", "PX Sphere",
               "Generate PhysX Shpere like mesh sphere",
               "PhysX", "Geometries")
@@ -28,28 +28,42 @@ namespace PhysX.GH.GrasshopperComponents
         {
             pManager.AddPlaneParameter("Base Plane", "B", "Base plane for sphere", GH_ParamAccess.item);
             pManager.AddNumberParameter("Radius", "R", "Radius for PhysX sphere", GH_ParamAccess.item, 1.0);
-            pManager.AddGenericParameter("Material Propertie", "P", "PhysX Material", GH_ParamAccess.item);
-            pManager[2].Optional = true;
+            pManager.AddBooleanParameter("Dynamic", "D", "Dynamic or Static, True: Dyamic, False: Static", GH_ParamAccess.item, true);
+            pManager.AddGenericParameter("Material Property", "P", "PhysX Material", GH_ParamAccess.item);
+            pManager[3].Optional = true;
         }
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Dynamic", "D", "PhysX Dynamics", GH_ParamAccess.item);
+            pManager.AddGenericParameter("RigidBody", "R", "PhysX Rigid body", GH_ParamAccess.item);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             Plane iPlane = new Plane();
             double iRadius = 0;
+            bool isDynamic = true;
             Material iMaterial = PhysXManager.Physics.CreateMaterial(50.0f, 50.0f, 0.6f);
 
             DA.GetData(0, ref iPlane);
             DA.GetData(1, ref iRadius);
-            DA.GetData(2, ref iMaterial);
+            DA.GetData(2, ref isDynamic);
+            DA.GetData(3, ref iMaterial);
 
             PxGhRigidDynamic dynamic = new PxGhRigidDynamicSphere(iPlane, (float)iRadius, iMaterial, 1f);
             
             DA.SetData(0, dynamic);
+
+            if (isDynamic)
+            {
+                PxGhRigidDynamic rigidDynamic = new PxGhRigidDynamicSphere(iPlane, (float)iRadius, iMaterial, 1f);
+                DA.SetData(0, rigidDynamic);
+            }
+            else
+            {
+                PxGhRigidStaticSphere rigidStatic = new PxGhRigidStaticSphere(iPlane, (float)iRadius, iMaterial);
+                DA.SetData(0, rigidStatic);
+            }
         }
 
         protected override System.Drawing.Bitmap Icon

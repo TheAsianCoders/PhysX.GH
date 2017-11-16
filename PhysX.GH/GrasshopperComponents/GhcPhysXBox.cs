@@ -15,9 +15,9 @@ using Plane = Rhino.Geometry.Plane;
 
 namespace PhysX.GH.GrasshopperComponents
 {
-    public class GhcPhysXDynamicBox : GH_Component
+    public class GhcPhysXBox : GH_Component
     {
-        public GhcPhysXDynamicBox()
+        public GhcPhysXBox()
           : base("PX Box", "PX Box",
               "Generate PhysX Box from GH Box",
               "PhysX", "Geometries")
@@ -27,30 +27,44 @@ namespace PhysX.GH.GrasshopperComponents
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddBoxParameter("Base", "B", "Base Box", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Material Propertie", "P", "PhysX Material", GH_ParamAccess.item);
-            pManager[1].Optional = true;
-
+            pManager.AddBooleanParameter("Dynamic", "D", "Dynamic or Static, True: Dyamic, False: Static", GH_ParamAccess.item, true);
+            pManager.AddGenericParameter("Material Property", "P", "PhysX Material", GH_ParamAccess.item);
+            pManager[2].Optional = true;
         }
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Dynamic", "D", "PhysX Dynamics", GH_ParamAccess.item);
+            pManager.AddGenericParameter("RigidBody", "R", "PhysX Rigid body", GH_ParamAccess.item);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             Box iBox = new Box();
+            bool isDynamic = true;
             Material iMaterial = PhysXManager.Physics.CreateMaterial(50.0f, 50.0f, 0.6f);
 
             DA.GetData(0, ref iBox);
-            DA.GetData(1, ref iMaterial);
+            DA.GetData(1, ref isDynamic);
+            DA.GetData(2, ref iMaterial);
 
             Plane plane = iBox.Plane;
             plane.Translate(iBox.Center - iBox.Plane.Origin);
-            PxGhRigidDynamic dynamic = 
-                new PxGhRigidDynamicBox(plane, (float)iBox.X.Length, (float)iBox.Y.Length, (float)iBox.Z.Length, iMaterial, 1);
 
-            DA.SetData(0, dynamic);
+            if (isDynamic)
+            {
+                PxGhRigidDynamic rigidDynamic =
+                    new PxGhRigidDynamicBox(plane, (float)iBox.X.Length, (float)iBox.Y.Length, (float)iBox.Z.Length, iMaterial, 1);
+
+                DA.SetData(0, rigidDynamic);
+            }
+            else
+            {
+                PxGhRigidStaticBox rigidStatic =
+                    new PxGhRigidStaticBox(plane, (float)iBox.X.Length, (float)iBox.Y.Length, (float)iBox.Z.Length, iMaterial);
+
+                DA.SetData(0, rigidStatic);
+            }
+
         }
 
         protected override System.Drawing.Bitmap Icon

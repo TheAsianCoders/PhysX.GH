@@ -57,10 +57,11 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GrasshopperComponents\GhcPhysXDynamicBox.cs" />
-    <Compile Include="GrasshopperComponents\GhcPhysXDynamicMesh.cs" />
-    <Compile Include="GrasshopperComponents\GhcPhysXDynamicSphere.cs" />
+    <Compile Include="GrasshopperComponents\GhcPhysXBox.cs" />
+    <Compile Include="GrasshopperComponents\GhcPhysXMesh.cs" />
+    <Compile Include="GrasshopperComponents\GhcPhysXSphere.cs" />
     <Compile Include="GrasshopperComponents\GhcPhysXPilot2.cs" />
+    <Compile Include="Kernel\PxGhRigidBody.cs" />
     <Compile Include="Kernel\PxGhRigidDynamicMesh.cs" />
     <Compile Include="Kernel\PxGhRigidStatic.cs" />
     <Compile Include="Kernel\PxGhRigidDynamic.cs" />

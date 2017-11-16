@@ -15,9 +15,9 @@ using Plane = Rhino.Geometry.Plane;
 
 namespace PhysX.GH.GrasshopperComponents
 {
-    public class GhcPhysXDynamicMesh : GH_Component
+    public class GhcPhysXMesh : GH_Component
     {
-        public GhcPhysXDynamicMesh()
+        public GhcPhysXMesh()
           : base("PX ConvexMesh", "PX CxMesh",
               "Input ConvexMesh or PhysX will automatically convert it to convex and the result won't be as expected",
               "PhysX", "Geometries")
@@ -27,28 +27,36 @@ namespace PhysX.GH.GrasshopperComponents
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "PhysX Mesh", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Material Propertie", "P", "PhysX Material", GH_ParamAccess.item);
-            pManager[1].Optional = true;
+            pManager.AddBooleanParameter("Dynamic", "D", "Dynamic or Static, True: Dyamic, False: Static", GH_ParamAccess.item, true);
+            pManager.AddGenericParameter("Material Property", "P", "PhysX Material", GH_ParamAccess.item);
+            pManager[2].Optional = true;
         }
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Dynamic", "D", "PhysX Dynamics", GH_ParamAccess.item);
+            pManager.AddGenericParameter("RigidBody", "R", "PhysX Rigid body", GH_ParamAccess.item);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             Mesh iMesh = new Mesh();
+            bool isDynamic = true;
             Material iMaterial = PhysXManager.Physics.CreateMaterial(50.0f, 50.0f, 0.6f);
 
             DA.GetData(0, ref iMesh);
-            DA.GetData(1, ref iMaterial);
+            DA.GetData(1, ref isDynamic);
+            DA.GetData(2, ref iMaterial);
 
             iMesh.Faces.ConvertQuadsToTriangles();
             PxGhRigidDynamic dynamic = new PxGhRigidDynamicMesh(Plane.WorldXY, iMesh, iMaterial, 1);
-            
+
 
             DA.SetData(0, dynamic);
+
+
+            PxGhRigidDynamic rigidDynamic = new PxGhRigidDynamicMesh(Plane.WorldXY, iMesh, iMaterial, 1);
+            DA.SetData(0, rigidDynamic);
+
         }
 
         protected override System.Drawing.Bitmap Icon
