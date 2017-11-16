@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GrasshopperComponents\GhcPhysXBox.cs" />
+    <Compile Include="GrasshopperComponents\GhcPhysXMaterial.cs" />
     <Compile Include="GrasshopperComponents\GhcPhysXMesh.cs" />
     <Compile Include="GrasshopperComponents\GhcPhysXSphere.cs" />
     <Compile Include="GrasshopperComponents\GhcPhysXPilot2.cs" />

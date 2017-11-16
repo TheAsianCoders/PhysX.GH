@@ -41,7 +41,7 @@ namespace PhysX.GH.GrasshopperComponents
         {
             Mesh iMesh = new Mesh();
             bool isDynamic = true;
-            Material iMaterial = PhysXManager.Physics.CreateMaterial(50.0f, 50.0f, 0.6f);
+            Material iMaterial = PhysXManager.Physics.CreateMaterial(0.5f, 0.5f, 0.5f);
 
             DA.GetData(0, ref iMesh);
             DA.GetData(1, ref isDynamic);
