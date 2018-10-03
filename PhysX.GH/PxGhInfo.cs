@@ -42,7 +42,7 @@ namespace PhysX.GH
             get
             {
                 //Return a string identifying you or your company.
-                return "";
+                return "Gene Ting-Chun Kao & Long Nguyen";
             }
         }
         public override string AuthorContact

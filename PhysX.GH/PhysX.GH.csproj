@@ -61,7 +61,6 @@
     <Compile Include="GrasshopperComponents\GhcPhysXMaterial.cs" />
     <Compile Include="GrasshopperComponents\GhcPhysXMesh.cs" />
     <Compile Include="GrasshopperComponents\GhcPhysXSphere.cs" />
-    <Compile Include="GrasshopperComponents\GhcPhysXPilot2.cs" />
     <Compile Include="Kernel\PxGhRigidBody.cs" />
     <Compile Include="Kernel\PxGhRigidDynamicMesh.cs" />
     <Compile Include="Kernel\PxGhRigidStatic.cs" />
@@ -72,7 +71,6 @@
     <Compile Include="Kernel\PxGhRigidDynamicBox.cs" />
     <Compile Include="Kernel\PxGhSystem.cs" />
     <Compile Include="GrasshopperComponents\GhcPhysXSimulate.cs" />
-    <Compile Include="GrasshopperComponents\GhcPhysXPilot.cs" />
     <Compile Include="PxGhAssemblyPriority.cs" />
     <Compile Include="PxGhInfo.cs" />
     <Compile Include="PhysXManager.cs" />
@@ -95,7 +93,9 @@
     <PostBuildEvent>Copy "$(TargetPath)" "C:\Users\Long\AppData\Roaming\Grasshopper\Libraries\PhysX.GH\PhysX.GH.gha"
 Copy "$(TargetPath)" "C:\Users\longn\AppData\Roaming\Grasshopper\Libraries\PhysX.GH\PhysX.GH.gha"
 Copy "$(TargetPath)" "C:\Users\kaogene\AppData\Roaming\Grasshopper\Libraries\PhysX.GH\PhysX.GH.gha"
-Erase "$(TargetPath)"</PostBuildEvent>
+Copy "$(TargetPath)" "C:\Users\user\AppData\Roaming\Grasshopper\Libraries\PhysX.GH\PhysX.GH.gha"
+Erase "$(TargetPath)"
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>
