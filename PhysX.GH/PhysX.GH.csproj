@@ -67,6 +67,8 @@
     <Compile Include="Kernel\PxGhRigidDynamicMesh.cs" />
     <Compile Include="Kernel\PxGhRigidStatic.cs" />
     <Compile Include="Kernel\PxGhRigidDynamic.cs" />
+    <Compile Include="Kernel\PxGhRigidStaticCMesh.cs" />
+    <Compile Include="Kernel\PxGhRigidStaticMesh.cs" />
     <Compile Include="Kernel\PxGHRigidStaticSphere.cs" />
     <Compile Include="Kernel\PxGhRigidStaticBox.cs" />
     <Compile Include="Kernel\PxGhRigidDynamicSphere.cs" />

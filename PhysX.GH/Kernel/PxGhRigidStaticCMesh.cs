@@ -12,19 +12,19 @@ using Plane = Rhino.Geometry.Plane;
 
 namespace PhysX.GH.Kernel
 {
-    public class PxGhRigidDynamicCMesh : PxGhRigidDynamic
+    public class PxGhRigidStaticCMesh : PxGhRigidStatic
     {
-        private List<Mesh> initialMeshes;
+        private List<GH_Mesh> ghMeshes;
 
-        public PxGhRigidDynamicCMesh(Plane plane, List<Mesh> meshes, Material material, float mass)
+        public PxGhRigidStaticCMesh(Plane plane, List<Mesh> meshes, Material material)
         {
-            initialMeshes = new List<Mesh>(meshes);
-            actor = PhysXManager.Physics.CreateRigidDynamic();
+            ghMeshes = new List<GH_Mesh>();
+            List<Mesh> initialMeshes = new List<Mesh>(meshes);
+            
+            actor = PhysXManager.Physics.CreateRigidStatic();
 
             foreach (Mesh initialMesh in initialMeshes)
             {
-                initialGlobalPose = plane.ToMatrix();
-
                 Mesh meshLocal = initialMesh.DuplicateMesh();
                 meshLocal.Transform(Transform.PlaneToPlane(plane, Plane.WorldXY));
 
@@ -52,22 +52,18 @@ namespace PhysX.GH.Kernel
                 ConvexMeshGeometry convexMeshGeometry = new ConvexMeshGeometry(convexMesh);
 
                 actor.CreateShape(convexMeshGeometry, material);
+
+                ghMeshes.Add(new GH_Mesh(meshLocal));
             }
 
             actor.GlobalPose = plane.ToMatrix();
-            actor.SetMassAndUpdateInertia(mass);
 
         }
 
+
         public override void GetDisplayGhMeshes(List<GH_Mesh> ghMeshes)
         {
-            foreach (Mesh initialMesh in initialMeshes)
-            {
-                Mesh mesh = initialMesh.DuplicateMesh();
-                mesh.Transform(actor.GlobalPose.ToRhinoTransform());
-                ghMeshes.Add(new GH_Mesh(mesh));
-            }
-            
+            ghMeshes.AddRange(this.ghMeshes);
         }
     }
 }

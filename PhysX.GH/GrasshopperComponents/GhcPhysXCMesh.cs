@@ -64,8 +64,6 @@ namespace PhysX.GH.GrasshopperComponents
 
             List<IGH_GeometricGoo> group = new List<IGH_GeometricGoo>(g.Objects);
 
-            List<PxGhRigidDynamic> rigidDynamics = new List<PxGhRigidDynamic>();
-
             for (int i = 0; i < group.Count; i++)
             {
                 Mesh m = new Mesh();
@@ -73,8 +71,18 @@ namespace PhysX.GH.GrasshopperComponents
                 meshes.Add(m);
             }
 
-            PxGhRigidDynamicCMesh rigidDynamic = new PxGhRigidDynamicCMesh(Plane.WorldXY, meshes, iMaterial, 1);
-            DA.SetData(0, rigidDynamic);
+
+            if (isDynamic)
+            {
+                PxGhRigidDynamic rigidDynamic = new PxGhRigidDynamicCMesh(Plane.WorldXY, meshes, iMaterial, 1);
+                DA.SetData(0, rigidDynamic);
+            }
+            else
+            {
+                PxGhRigidStatic rigidStatic = new PxGhRigidStaticCMesh(Plane.WorldXY, meshes, iMaterial);
+                DA.SetData(0, rigidStatic);
+            }
+            
 
         }
 

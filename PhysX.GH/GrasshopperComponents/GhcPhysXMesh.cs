@@ -47,8 +47,16 @@ namespace PhysX.GH.GrasshopperComponents
             DA.GetData(1, ref isDynamic);
             DA.GetData(2, ref iMaterial);
 
-            PxGhRigidDynamic rigidDynamic = new PxGhRigidDynamicMesh(Plane.WorldXY, iMesh, iMaterial, 1);
-            DA.SetData(0, rigidDynamic);
+            if (isDynamic)
+            {
+                PxGhRigidDynamic rigidDynamic = new PxGhRigidDynamicMesh(Plane.WorldXY, iMesh, iMaterial, 1);
+                DA.SetData(0, rigidDynamic);
+            }
+            else
+            {
+                PxGhRigidStatic rigidStatic = new PxGhRigidStaticMesh(Plane.WorldXY, iMesh, iMaterial);
+                DA.SetData(0, rigidStatic);
+            }
 
         }
 
