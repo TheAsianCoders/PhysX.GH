@@ -37,6 +37,7 @@ namespace PhysX.GH.GrasshopperComponents
             pManager.AddVectorParameter("Gravity", "Gravity", "Gravity", GH_ParamAccess.item, new Vector3d(0.0, 0.0, -9.8));
             pManager.AddNumberParameter("Timestep", "Timestep", "Timestep", GH_ParamAccess.item, 0.01);
             pManager.AddIntegerParameter("Steps", "Steps", "Steps", GH_ParamAccess.item, 10);
+            pManager.AddBooleanParameter("ReSys", "ReSys", "Restart system during sequence", GH_ParamAccess.item, true);
             pManager.AddIntegerParameter("Sequence", "Sequence", "Sequence", GH_ParamAccess.list);
             pManager.AddBooleanParameter("Reset", "Reset", "Reset", GH_ParamAccess.item, true);
             pManager.AddBooleanParameter("Run", "Run", "Run", GH_ParamAccess.item, false);
@@ -47,6 +48,7 @@ namespace PhysX.GH.GrasshopperComponents
             pManager.AddTextParameter("Info", "Info", "Info", GH_ParamAccess.item);
             pManager.AddGeometryParameter("Dynamics", "Dynamics", "Dynamics", GH_ParamAccess.list);
             pManager.AddGeometryParameter("Statics", "Statics", "Statics", GH_ParamAccess.list);
+            pManager.AddBooleanParameter("Stable", "Stable", "If all rigid dynamics stable", GH_ParamAccess.item);
         }
 
 
@@ -79,9 +81,12 @@ namespace PhysX.GH.GrasshopperComponents
             }
 
             List<int> sequence = new List<int>();
+            bool iResys = true; 
             DA.GetDataList("Sequence", sequence);
+            DA.GetData("ReSys", ref iResys);
 
-            if (isAllStable && isSeq && counter < sequence.Count)
+            // Restart the PhysX system with perfect geometry
+            if (isAllStable && isSeq && counter < sequence.Count && iResys)
             {
                 system = new GhPxSystem();
                 for (int i = 0; i <= counter; i++)
@@ -103,29 +108,28 @@ namespace PhysX.GH.GrasshopperComponents
                 counter++;
             }
 
-            #region Adding simulating without restarting the system. Imperfect geometry condition
-            //if (isAllStable && isSeq && counter < sequence.Count)
-            //{
-            //    PxGhRigidBody rb = iRigidBodies[sequence[counter]];
-            //    if (rb is PxGhRigidDynamic)
-            //    {
-            //        PxGhRigidDynamic d = rb as PxGhRigidDynamic;
-            //        system.AddRigidDynamic(d);
-            //        d.Reset();
+            // Adding simulating without restarting the system. Imperfect geometry condition
+            if (isAllStable && isSeq && counter < sequence.Count && !iResys)
+            {
+                PxGhRigidBody rb = iRigidBodies[sequence[counter]];
+                if (rb is PxGhRigidDynamic)
+                {
+                    PxGhRigidDynamic d = rb as PxGhRigidDynamic;
+                    system.AddRigidDynamic(d);
+                    d.Reset();
 
-            //        isSeq = false;
-            //        counter++;
-            //    }
-            //    else if (rb is PxGhRigidStatic)
-            //    {
-            //        PxGhRigidStatic s = rb as PxGhRigidStatic;
-            //        system.AddRigidStatic(s);
+                    isSeq = false;
+                    counter++;
+                }
+                else if (rb is PxGhRigidStatic)
+                {
+                    PxGhRigidStatic s = rb as PxGhRigidStatic;
+                    system.AddRigidStatic(s);
 
-            //        isSeq = false;
-            //        counter++;
-            //    }
-            //}
-            #endregion
+                    isSeq = false;
+                    counter++;
+                }
+            }
 
 
             isAllStable = true;
@@ -153,6 +157,7 @@ namespace PhysX.GH.GrasshopperComponents
             DA.SetData("Info", decimal.Round((decimal)stopwatch.Elapsed.TotalMilliseconds, 2) + "ms" + info );
             DA.SetDataList("Statics", staticGhMeshes);
             DA.SetDataList("Dynamics", system.GetRigidDynamicDisplayGhMeshes());
+            DA.SetData("Stable", isAllStable);
         }
 
         protected override System.Drawing.Bitmap Icon => null;
