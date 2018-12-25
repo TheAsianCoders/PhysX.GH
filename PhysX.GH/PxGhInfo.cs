@@ -10,7 +10,7 @@ namespace PhysX.GH
         {
             get
             {
-                return "PhysX.GH";
+                return "Penguin PhysX.GH";
             }
         }
         public override Bitmap Icon
@@ -18,7 +18,7 @@ namespace PhysX.GH
             get
             {
                 //Return a 24x24 pixel bitmap to represent this GHA library.
-                return null;
+                return Properties.Resources.logo_24x24;
             }
         }
         public override string Description
@@ -26,7 +26,7 @@ namespace PhysX.GH
             get
             {
                 //Return a short string describing the purpose of this GHA library.
-                return "";
+                return "PhysX rigid body simulation in Grasshopper";
             }
         }
         public override Guid Id
@@ -42,7 +42,7 @@ namespace PhysX.GH
             get
             {
                 //Return a string identifying you or your company.
-                return "Gene Ting-Chun Kao & Long Nguyen";
+                return "Gene Ting-Chun Kao & Long Nguyen, The Asian Coders";
             }
         }
         public override string AuthorContact
@@ -50,7 +50,7 @@ namespace PhysX.GH
             get
             {
                 //Return a string representing your preferred contact details.
-                return "";
+                return "kao.gene@gmail.com";
             }
         }
     }

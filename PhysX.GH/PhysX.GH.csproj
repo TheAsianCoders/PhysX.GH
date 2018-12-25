@@ -75,6 +75,11 @@
     <Compile Include="Kernel\PxGhRigidDynamicBox.cs" />
     <Compile Include="Kernel\PxGhSystem.cs" />
     <Compile Include="GrasshopperComponents\GhcPhysXSimulate.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="PxGhAssemblyPriority.cs" />
     <Compile Include="PxGhInfo.cs" />
     <Compile Include="PhysXManager.cs" />
@@ -84,6 +89,33 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo-24x24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PenguinBox.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PenguinCMesh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PenguinMaterial.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PenguinMesh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PenguinSolver.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PenguinSphere.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

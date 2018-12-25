@@ -111,7 +111,7 @@ namespace PhysX.GH.GrasshopperComponents
         }
 
 
-        protected override System.Drawing.Bitmap Icon => null;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.PenguinSolver;
         public override Guid ComponentGuid => new Guid("{776F3532-145A-4F5D-BB95-2B81B1CC936C}");
     }
 }
