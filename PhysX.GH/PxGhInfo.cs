@@ -10,7 +10,7 @@ namespace PhysX.GH
         {
             get
             {
-                return "Penguin PhysX.GH";
+                return "PhysX.GH";
             }
         }
         public override Bitmap Icon

@@ -72,7 +72,7 @@ namespace PhysX.GH.GrasshopperComponents
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resources.PenguinSphere;
+                return Properties.Resources.Sphere;
             }
         }
 

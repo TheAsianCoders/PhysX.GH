@@ -63,6 +63,26 @@ namespace PhysX.GH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Box {
+            get {
+                object obj = ResourceManager.GetObject("Box", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CMesh {
+            get {
+                object obj = ResourceManager.GetObject("CMesh", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap logo_24x24 {
             get {
                 object obj = ResourceManager.GetObject("logo_24x24", resourceCulture);
@@ -73,9 +93,9 @@ namespace PhysX.GH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PenguinBox {
+        internal static System.Drawing.Bitmap Material {
             get {
-                object obj = ResourceManager.GetObject("PenguinBox", resourceCulture);
+                object obj = ResourceManager.GetObject("Material", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +103,9 @@ namespace PhysX.GH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PenguinCMesh {
+        internal static System.Drawing.Bitmap Mesh {
             get {
-                object obj = ResourceManager.GetObject("PenguinCMesh", resourceCulture);
+                object obj = ResourceManager.GetObject("Mesh", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +113,9 @@ namespace PhysX.GH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PenguinMaterial {
+        internal static System.Drawing.Bitmap Solver {
             get {
-                object obj = ResourceManager.GetObject("PenguinMaterial", resourceCulture);
+                object obj = ResourceManager.GetObject("Solver", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,29 +123,9 @@ namespace PhysX.GH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PenguinMesh {
+        internal static System.Drawing.Bitmap Sphere {
             get {
-                object obj = ResourceManager.GetObject("PenguinMesh", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap PenguinSolver {
-            get {
-                object obj = ResourceManager.GetObject("PenguinSolver", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap PenguinSphere {
-            get {
-                object obj = ResourceManager.GetObject("PenguinSphere", resourceCulture);
+                object obj = ResourceManager.GetObject("Sphere", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

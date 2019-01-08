@@ -121,22 +121,22 @@
   <data name="logo_24x24" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\logo-24x24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="PenguinBox" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\PenguinBox.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Box" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Box.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="PenguinCMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\PenguinCMesh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="CMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CMesh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="PenguinMaterial" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\PenguinMaterial.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Material" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Material.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="PenguinMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\PenguinMesh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Mesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Mesh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="PenguinSolver" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\PenguinSolver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Solver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Solver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="PenguinSphere" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\PenguinSphere.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Sphere" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Sphere.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
