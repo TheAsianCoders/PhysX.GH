@@ -10,7 +10,7 @@ namespace PhysX.GH
     {
         public override GH_LoadingInstruction PriorityLoad()
         {
-            PhysXManager.Initialize();
+            PxGhManager.Initialize();
             return GH_LoadingInstruction.Proceed;
         }
     }

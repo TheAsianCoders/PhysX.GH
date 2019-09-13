@@ -10,7 +10,6 @@ namespace PhysX.GH
     {
         private static Random random = new Random();
 
-        // ===============================================================================================================================================
 
         public static double Distance(Point3d A, Point3d B)
         {
@@ -23,20 +22,24 @@ namespace PhysX.GH
             return Math.Sqrt(Math.Pow(A.X - B.X, 2.0) + Math.Pow(A.Y - B.Y, 2.0));
         }
 
+
         public static double DistanceSquared(Point3d A, Point3d B)
         {
             return Math.Pow(A.X - B.X, 2.0) + Math.Pow(A.Y - B.Y, 2.0) + Math.Pow(A.Z - B.Z, 2.0);
         }
+
 
         public static double DistanceSquaredXY(Point3d A, Point3d B)
         {
             return Math.Pow(A.X - B.X, 2.0) + Math.Pow(A.Y - B.Y, 2.0);
         }
 
+
         public static double DistancePointLine(Point3d M, Point3d A, Point3d B)
         {
             return Vector3d.CrossProduct(M - A, M - B).Length / (A - B).Length;
         }
+
 
         public static Point3d ClosestPointOnLine(Point3d M, Point3d A, Point3d B)
         {
@@ -47,6 +50,7 @@ namespace PhysX.GH
 
             return A + AB / AB.Length * Math.Sqrt(DistanceSquared(M, A) - distance * distance);
         }
+
 
         public static Point3d ClosestPointOnLine(Point3d M, Point3d A, Point3d B, ref double distance)
         {
@@ -72,7 +76,6 @@ namespace PhysX.GH
             double x = minX + (maxX - minX) * random.NextDouble();
             double y = minY + (maxY - minY) * random.NextDouble();
             double z = minZ + (maxZ - minZ) * random.NextDouble();
-
             return new Point3d(x, y, z);
         }
 
@@ -81,11 +84,9 @@ namespace PhysX.GH
         {
             double phi = 2.0 * Math.PI * random.NextDouble();
             double theta = Math.Acos(2.0 * random.NextDouble() - 1.0);
-
             double x = Math.Sin(theta) * Math.Cos(phi);
             double y = Math.Sin(theta) * Math.Sin(phi);
             double z = Math.Cos(theta);
-
             return new Vector3d(x, y, z);
         }
 
@@ -93,10 +94,8 @@ namespace PhysX.GH
         public static Vector3d GetRandomUnitVectorXY()
         {
             double angle = 2.0 * Math.PI * random.NextDouble();
-
             double x = Math.Cos(angle);
             double y = Math.Sin(angle);
-
             return new Vector3d(x, y, 0.0);
         }
 
@@ -140,8 +139,7 @@ namespace PhysX.GH
         {
             return AngleBetweenTwoVectors(
                 M - ClosestPointOnLine(M, A, B),
-                N - ClosestPointOnLine(N, A, B)
-                );
+                N - ClosestPointOnLine(N, A, B));
         }
 
 
@@ -191,14 +189,34 @@ namespace PhysX.GH
         }
 
 
-        public static void CleanMesh(Mesh m)
+        public static void CleanMesh(this Mesh mesh)
         {
-            m.Vertices.CombineIdentical(true, true);
-            m.Vertices.CullUnused();
-            m.Weld(3.1415926535897931);
-            m.UnifyNormals();
-            m.FaceNormals.ComputeFaceNormals();
+            mesh.Vertices.CombineIdentical(true, true);
+            mesh.Vertices.CullUnused();
+            mesh.Weld(3.1415926535897931);
+            mesh.UnifyNormals();
+            mesh.FaceNormals.ComputeFaceNormals();
+            mesh.Normals.ComputeNormals();
+        }
+
+
+        public static Mesh UnjoinFaces(this Mesh mesh)
+        {
+            Mesh m = new Mesh();
+
+            foreach (MeshFace face in mesh.Faces)
+            {
+                int i = m.Vertices.Count;
+                m.Vertices.Add(mesh.Vertices[face.A]);
+                m.Vertices.Add(mesh.Vertices[face.B]);
+                m.Vertices.Add(mesh.Vertices[face.C]);
+                m.Faces.AddFace(new MeshFace(i, i + 1, i + 2));
+            }
+
             m.Normals.ComputeNormals();
+            m.FaceNormals.ComputeFaceNormals();
+
+            return m;
         }
 
 
@@ -206,7 +224,10 @@ namespace PhysX.GH
         public static Point3d ToRhinoPoint(this Vector3 v) => new Point3d(v.X, v.Y, v.Z);
 
         public static Vector3 ToSystemVector(this Vector3d v) => new Vector3((float)v.X, (float)v.Y, (float)v.Z);
+        public static Vector3 ToSystemVector(this Vector3f v) => new Vector3(v.X, v.Y, v.Z);
         public static Vector3 ToSystemVector(this Point3d p) => new Vector3((float)p.X, (float)p.Y, (float)p.Z);
+        public static Vector3 ToSystemVector(this Point3f p) => new Vector3(p.X, p.Y, p.Z);
+
 
         public static Plane ToRhinoPlane(this Matrix4x4 m)
             => new Plane(
@@ -215,9 +236,8 @@ namespace PhysX.GH
                 new Vector3d(m.M21, m.M22, m.M23));
 
 
-
         public static Transform ToRhinoTransform(this Matrix4x4 m)
-            =>new Transform
+            => new Transform
             {
                 M00 = m.M11, M01 = m.M21, M02 = m.M31, M03 = m.M41,
                 M10 = m.M12, M11 = m.M22, M12 = m.M32, M13 = m.M42,
@@ -234,11 +254,11 @@ namespace PhysX.GH
                 M20 = p.XAxis.Z, M21 = p.YAxis.Z, M22 = p.ZAxis.Z, M23 = p.OriginZ,
                 M30 = 0.0      , M31 = 0.0      , M32 = 0.0      , M33 = 1.0,
             };
-        
+
 
         public static Matrix4x4 ToMatrix(this Transform t)
             => new Matrix4x4
-            { 
+            {
                 M11 = (float)t.M00, M12 = (float)t.M10, M13 = (float)t.M20, M14 = (float)t.M30,
                 M21 = (float)t.M01, M22 = (float)t.M11, M23 = (float)t.M21, M24 = (float)t.M31,
                 M31 = (float)t.M02, M32 = (float)t.M12, M33 = (float)t.M22, M34 = (float)t.M32,
@@ -248,7 +268,7 @@ namespace PhysX.GH
 
         public static Matrix4x4 ToMatrix(this Plane p)
             => new Matrix4x4
-            { 
+            {
                 M11 = (float)p.XAxis.X, M12 = (float)p.XAxis.Y, M13 = (float)p.XAxis.Z, M14 = 0f,
                 M21 = (float)p.YAxis.X, M22 = (float)p.YAxis.Y, M23 = (float)p.YAxis.Z, M24 = 0f,
                 M31 = (float)p.ZAxis.X, M32 = (float)p.ZAxis.Y, M33 = (float)p.ZAxis.Z, M34 = 0f,
@@ -258,13 +278,13 @@ namespace PhysX.GH
 
         //public static Matrix4x4 ToMatrix(this Rhino.Geometry.Plane p)
         //    => new Matrix4x4
-        //    { 
+        //    {
         //        M11 = (float)t.M00, M12 = (float)t.M10, M13 = (float)t.M20, M14 = (float)t.M30,
         //        M21 = (float)t.M01, M22 = (float)t.M11, M23 = (float)t.M21, M24 = (float)t.M31,
         //        M31 = (float)t.M02, M32 = (float)t.M12, M33 = (float)t.M22, M34 = (float)t.M32,
         //        M41 = (float)t.M03, M42 = (float)t.M13, M43 = (float)t.M23, M44 = (float)t.M33,
         //    };
-        
+
 
 
         //public static Transform ToRhinoTransformXZ(Matrix4x4 matrix)

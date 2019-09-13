@@ -36,7 +36,7 @@ namespace PhysX.GH.GrasshopperComponents
             DA.GetData(1, ref fd);
             DA.GetData(2, ref r);
 
-            Material material = PhysXManager.Physics.CreateMaterial((float)fs, (float)fd, (float)r);
+            Material material = PxGhManager.Physics.CreateMaterial((float)fs, (float)fd, (float)r);
 
             DA.SetData(0, material);
         }

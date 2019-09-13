@@ -9,26 +9,24 @@ using PhysX.GH.Kernel;
 using PhysX;
 using Rhino.Geometry;
 
-namespace PhysX.GH
+namespace PhysX.GH.Kernel
 {
     public class GhPxSystem
     {
-        internal LinkedList<PxGhRigidStatic> ghPxRigidStatics;
-        internal LinkedList<PxGhRigidDynamic> ghPxRigidDynamics;
+        internal readonly LinkedList<PxGhRigidStatic> GhPxRigidStatics = new LinkedList<PxGhRigidStatic>();
+        internal readonly LinkedList<PxGhRigidDynamic> GhPxRigidDynamics = new LinkedList<PxGhRigidDynamic>();
 
 
         public GhPxSystem()
         {
-            ghPxRigidStatics = new LinkedList<PxGhRigidStatic>();
-            ghPxRigidDynamics = new LinkedList<PxGhRigidDynamic>();
-            PhysXManager.ClearScene();
+            PxGhManager.ClearScene();
         }
 
 
         public Vector3d Gravity
         {
-            get { return PhysXManager.Scene.Gravity.ToRhinoVector(); }
-            set { PhysXManager.Scene.Gravity = value.ToSystemVector(); }
+            get { return PxGhManager.Scene.Gravity.ToRhinoVector(); }
+            set { PxGhManager.Scene.Gravity = value.ToSystemVector(); }
         }
 
 
@@ -36,51 +34,51 @@ namespace PhysX.GH
         {
             for (int i = 0; i < steps; i++)
             {
-                PhysXManager.Scene.Simulate(timeStep);
-                PhysXManager.Scene.FetchResults(true);
+                PxGhManager.Scene.Simulate(timeStep);
+                PxGhManager.Scene.FetchResults(true);
             }
         }
 
 
         public void Reset()
         {
-            foreach (PxGhRigidDynamic o in ghPxRigidDynamics)
+            foreach (PxGhRigidDynamic o in GhPxRigidDynamics)
                 o.Reset();
         }
 
 
         public void AddRigidStatic(PxGhRigidStatic o)
         {
-            ghPxRigidStatics.AddLast(o);
-            PhysXManager.Scene.AddActor(o.actor);
+            GhPxRigidStatics.AddLast(o);
+            PxGhManager.Scene.AddActor(o.Actor);
         }
 
 
         public void AddRigidDynamic(PxGhRigidDynamic o)
         {
-            ghPxRigidDynamics.AddLast(o);
-            PhysXManager.Scene.AddActor(o.actor);
+            GhPxRigidDynamics.AddLast(o);
+            PxGhManager.Scene.AddActor(o.Actor);
         }
 
 
         public void RemoveRigidStatic(PxGhRigidStatic o)
         {
-            ghPxRigidStatics.Remove(o);
-            PhysXManager.Scene.RemoveActor(o.actor);
+            GhPxRigidStatics.Remove(o);
+            PxGhManager.Scene.RemoveActor(o.Actor);
         }
 
 
         public void RemoveRigidDynamic(PxGhRigidDynamic o)
         {
-            ghPxRigidDynamics.Remove(o);
-            PhysXManager.Scene.RemoveActor(o.actor);
+            GhPxRigidDynamics.Remove(o);
+            PxGhManager.Scene.RemoveActor(o.Actor);
         }
 
 
         public List<GH_Mesh> GetRigidDynamicDisplayGhMeshes()
         {
             List<GH_Mesh> ghMeshes = new List<GH_Mesh>();
-            foreach (PxGhRigidDynamic o in ghPxRigidDynamics)
+            foreach (PxGhRigidDynamic o in GhPxRigidDynamics)
                 o.GetDisplayGhMeshes(ghMeshes);
             return ghMeshes;
         }
@@ -89,7 +87,7 @@ namespace PhysX.GH
         public List<GH_Mesh> GetRigidStaticDisplayGhMeshes()
         {
             List<GH_Mesh> ghMeshes = new List<GH_Mesh>();
-            foreach (PxGhRigidStatic o in ghPxRigidStatics)
+            foreach (PxGhRigidStatic o in GhPxRigidStatics)
                 o.GetDisplayGhMeshes(ghMeshes);
             return ghMeshes;
         }

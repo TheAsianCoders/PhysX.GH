@@ -18,6 +18,8 @@ namespace PhysX.GH.GrasshopperComponents
         private GhPxSystem system;
         private Stopwatch stopwatch = new Stopwatch();
         private List<GH_Mesh> staticGhMeshes;
+        string info;
+
 
         public GhcPhysXSimulate()
             : base(
@@ -29,6 +31,10 @@ namespace PhysX.GH.GrasshopperComponents
         {
 
         }
+
+
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.Solver;
+        public override Guid ComponentGuid => new Guid("{776F3532-145A-4F5D-BB95-2B81B1CC936C}");
 
 
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
@@ -71,47 +77,40 @@ namespace PhysX.GH.GrasshopperComponents
                 system = new GhPxSystem();
 
                 List<PxGhRigidBody> iRigidBodies = new List<PxGhRigidBody>();
-                foreach (GH_ObjectWrapper flatten in Params.Input[0].VolatileData.AllData(true))
-                    iRigidBodies.Add((PxGhRigidBody)flatten.Value);
+                foreach (GH_ObjectWrapper o in Params.Input[0].VolatileData.AllData(true))
+                    iRigidBodies.Add((PxGhRigidBody)o.Value);
 
                 foreach (PxGhRigidBody o in iRigidBodies)
                 {
                     if (o is PxGhRigidDynamic)
                     {
-                        PxGhRigidDynamic d = o as PxGhRigidDynamic;
+                        PxGhRigidDynamic d = (PxGhRigidDynamic)o;
                         system.AddRigidDynamic(d);
                         d.Reset();
                     }
                     else if (o is PxGhRigidStatic)
                     {
-                        PxGhRigidStatic s = o as PxGhRigidStatic;
-                        system.AddRigidStatic(s);
+                        system.AddRigidStatic((PxGhRigidStatic)o);
                     }
                 }
 
                 staticGhMeshes = system.GetRigidStaticDisplayGhMeshes();
             }
 
+            info = "";
 
-            if (iRun) ExpireSolution(true);
-
-            stopwatch.Restart();
-            system.Gravity = iGravity;
-            system.Update((float)iTimestep, iSteps);
-            stopwatch.Stop();
-
-            string info = "";
-
-            foreach (var o in system.ghPxRigidDynamics)
-                info += "\n" + o.actor.IsSleeping;
+            if (iRun)
+            {
+                ExpireSolution(true);
+                stopwatch.Restart();
+                system.Gravity = iGravity;
+                system.Update((float) iTimestep, iSteps);
+                stopwatch.Stop();
+            }
 
             DA.SetData("Info", decimal.Round((decimal)stopwatch.Elapsed.TotalMilliseconds, 2) + "ms" + info);
             DA.SetDataList("Statics", staticGhMeshes);
             DA.SetDataList("Dynamics", system.GetRigidDynamicDisplayGhMeshes());
         }
-
-
-        protected override System.Drawing.Bitmap Icon => Properties.Resources.Solver;
-        public override Guid ComponentGuid => new Guid("{776F3532-145A-4F5D-BB95-2B81B1CC936C}");
     }
 }

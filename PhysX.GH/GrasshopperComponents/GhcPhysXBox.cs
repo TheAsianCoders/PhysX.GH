@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
@@ -13,73 +12,56 @@ using Rhino.Geometry;
 
 using Plane = Rhino.Geometry.Plane;
 
+
 namespace PhysX.GH.GrasshopperComponents
 {
     public class GhcPhysXBox : GH_Component
     {
         public GhcPhysXBox()
-          : base("PX Box", "PX Box",
-              "Generate PhysX Box from GH Box",
-              "PhysX", "Geometries")
+            : base(
+                "PX Box",
+                "PX Box",
+                "Create a PhysX box rigid body",
+                "PhysX",
+                "Geometries")
         {
         }
 
+
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.Box;
+        public override Guid ComponentGuid => new Guid("fdf90b10-f520-4ea8-abb3-a85fafca0298");
+
+
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddBoxParameter("Base", "B", "Base Box", GH_ParamAccess.item);
-            pManager.AddBooleanParameter("Dynamic", "D", "Dynamic or Static, True: Dyamic, False: Static", GH_ParamAccess.item, true);
-            pManager.AddGenericParameter("Material Property", "P", "PhysX Material", GH_ParamAccess.item);
+            pManager.AddBoxParameter("Box", "B", "Box", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("Dynamic", "D", "Dynamic or Static, True: Dynamic, False: Static", GH_ParamAccess.item, true);
+            pManager.AddGenericParameter("Material", "M", "PhysX Material", GH_ParamAccess.item);
             pManager[2].Optional = true;
+            pManager.AddNumberParameter("Mass", "M", "Mass", GH_ParamAccess.item, 1.0);
         }
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("RigidBody", "R", "PhysX Rigid body", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Rigid Body", "R", "PhysX rigid body", GH_ParamAccess.item);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            Box iBox = new Box();
-            bool isDynamic = true;
-            Material iMaterial = PhysXManager.Physics.CreateMaterial(0.5f, 0.5f, 0.5f);
+            Box iBox = Box.Empty;
+            bool iDynamic = true;
+            Material iMaterial = PxGhManager.DefaultMaterial;
+            double iMass = double.NaN;
 
             DA.GetData(0, ref iBox);
-            DA.GetData(1, ref isDynamic);
+            DA.GetData(1, ref iDynamic);
             DA.GetData(2, ref iMaterial);
+            DA.GetData(3, ref iMass);
 
-            Plane plane = iBox.Plane;
-            plane.Translate(iBox.Center - iBox.Plane.Origin);
-
-            if (isDynamic)
-            {
-                PxGhRigidDynamic rigidDynamic =
-                    new PxGhRigidDynamicBox(plane, (float)iBox.X.Length, (float)iBox.Y.Length, (float)iBox.Z.Length, iMaterial, 1);
-
-                DA.SetData(0, rigidDynamic);
-            }
+            if (iDynamic)
+                DA.SetData(0, new PxGhRigidDynamicBox(iBox, iMaterial, (float)iMass, Vector3d.Zero, Vector3d.Zero));
             else
-            {
-                PxGhRigidStaticBox rigidStatic =
-                    new PxGhRigidStaticBox(plane, (float)iBox.X.Length, (float)iBox.Y.Length, (float)iBox.Z.Length, iMaterial);
-
-                DA.SetData(0, rigidStatic);
-            }
-
-        }
-
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
-                //You can add image files to your project resources and access them like this:
-                // return Resources.IconForThisComponent;
-                return Properties.Resources.Box;
-            }
-        }
-
-        public override Guid ComponentGuid
-        {
-            get { return new Guid("fdf90b10-f520-4ea8-abb3-a85fafca0298"); }
+                DA.SetData(0, new PxGhRigidStaticBox(iBox, iMaterial));
         }
     }
 }

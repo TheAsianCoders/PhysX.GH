@@ -58,18 +58,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GrasshopperComponents\GhcPhysXBox.cs" />
-    <Compile Include="GrasshopperComponents\GhcPhysXCMesh.cs" />
+    <Compile Include="GrasshopperComponents\GhcPhysXCompoundConvexMesh.cs" />
     <Compile Include="GrasshopperComponents\GhcPhysXMaterial.cs" />
-    <Compile Include="GrasshopperComponents\GhcPhysXMesh.cs" />
     <Compile Include="GrasshopperComponents\GhcPhysXSphere.cs" />
     <Compile Include="Kernel\PxGhRigidBody.cs" />
-    <Compile Include="Kernel\PxGhRigidDynamicCMesh.cs" />
-    <Compile Include="Kernel\PxGhRigidDynamicMesh.cs" />
+    <Compile Include="Kernel\PxGhRigidDynamicConvexMeshGroup.cs" />
     <Compile Include="Kernel\PxGhRigidStatic.cs" />
     <Compile Include="Kernel\PxGhRigidDynamic.cs" />
-    <Compile Include="Kernel\PxGhRigidStaticCMesh.cs" />
-    <Compile Include="Kernel\PxGhRigidStaticMesh.cs" />
-    <Compile Include="Kernel\PxGHRigidStaticSphere.cs" />
+    <Compile Include="Kernel\PxGhRigidStaticCompoundMesh.cs" />
+    <Compile Include="Kernel\PxGhRigidStaticSphere.cs" />
     <Compile Include="Kernel\PxGhRigidStaticBox.cs" />
     <Compile Include="Kernel\PxGhRigidDynamicSphere.cs" />
     <Compile Include="Kernel\PxGhRigidDynamicBox.cs" />
@@ -82,9 +79,9 @@
     </Compile>
     <Compile Include="PxGhAssemblyPriority.cs" />
     <Compile Include="PxGhInfo.cs" />
-    <Compile Include="PhysXManager.cs" />
+    <Compile Include="PxGhManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PxGhUtil.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -136,7 +133,7 @@
     <None Include="Resources\Sphere.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
@@ -144,12 +141,9 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetPath)" "C:\Users\Long\AppData\Roaming\Grasshopper\Libraries\PhysX.GH\PhysX.GH.gha"
-Copy "$(TargetPath)" "C:\Users\longn\AppData\Roaming\Grasshopper\Libraries\PhysX.GH\PhysX.GH.gha"
-Copy "$(TargetPath)" "C:\Users\kaogene\AppData\Roaming\Grasshopper\Libraries\PhysX.GH\PhysX.GH.gha"
-Copy "$(TargetPath)" "C:\Users\user\AppData\Roaming\Grasshopper\Libraries\PhysX.GH\PhysX.GH.gha"
-Erase "$(TargetPath)"
-</PostBuildEvent>
+    <PostBuildEvent>
+      Copy "$(TargetPath)" "%AppData%\Grasshopper\Libraries\PhysX.GH\PhysX.GH.gha"
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>
