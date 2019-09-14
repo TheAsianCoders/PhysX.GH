@@ -19,7 +19,7 @@ namespace PhysX.GH.GrasshopperComponents
     {
         public GhcPhysXCompoundConvexMesh()
             : base(
-                "PX CompoundConvexMesh",
+                "PX Compound Convex Mesh",
                 "PX Mesh",
                 "Create a PhysX rigid body consisting of one or more convex meshes",
                 "PhysX", "Geometries")
@@ -33,12 +33,16 @@ namespace PhysX.GH.GrasshopperComponents
 
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddGroupParameter("Meshes", "M", "Meshes", GH_ParamAccess.item);
-            pManager.AddPlaneParameter("Frame", "F", "Frame", GH_ParamAccess.item, Plane.WorldXY);
-            pManager.AddBooleanParameter("Dynamic", "D", "Dynamic or Static, True: Dynamic, False: Static", GH_ParamAccess.item, true);
-            pManager.AddGenericParameter("Material", "M", "PhysX Material", GH_ParamAccess.item);
+            pManager.AddMeshParameter("Meshes", "Meshes", "Meshes used for the computation in physics simulation", GH_ParamAccess.list);
+            pManager.AddPlaneParameter("Frame", "Frame", "Frame", GH_ParamAccess.item, Plane.WorldXY);
+            pManager.AddBooleanParameter("Dynamic", "Dynamic", "Dynamic or Static, True: Dynamic, False: Static", GH_ParamAccess.item, true);
+            pManager.AddGenericParameter("Material (Optional)", "Material", "PhysX material", GH_ParamAccess.item);
             pManager[3].Optional = true;
-            pManager.AddNumberParameter("Mass", "M", "Mass", GH_ParamAccess.item, 1.0);
+            pManager.AddNumberParameter("Mass", "Mass", "Mass", GH_ParamAccess.item, 1.0);
+            pManager.AddVectorParameter("Initial Linear Velocity", "Linear Vel.", "Initial linear velocity", GH_ParamAccess.item, Vector3d.Zero);
+            pManager.AddVectorParameter("Initial Angular Velocity", "Angular Vel.", "Initial angular velocity", GH_ParamAccess.item, Vector3d.Zero);
+            pManager.AddMeshParameter("Displayed Meshes (Optional)", "Displayed Meshes", "The displayed meshes can be different and typically has more details and higher resolution that the actual meshes used in physics simulation", GH_ParamAccess.list);
+            pManager[7].Optional = true;
         }
 
 
@@ -50,32 +54,28 @@ namespace PhysX.GH.GrasshopperComponents
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            GH_GeometryGroup iGroup = new GH_GeometryGroup();
+            List<Mesh> iMeshes = new List<Mesh>();
             Plane iFrame = Plane.WorldXY;
             bool iDynamic = true;
             Material iMaterial = PxGhManager.DefaultMaterial;
             double iMass = double.NaN;
+            Vector3d iInitialLinearVelocity = Vector3d.Unset;
+            Vector3d iInitialLAngularVelocity = Vector3d.Unset;
+            List<Mesh> iDisplayeMeshes = new List<Mesh>();
 
-            DA.GetData(0, ref iGroup);
+            DA.GetDataList(0, iMeshes);
             DA.GetData(1, ref iFrame);
             DA.GetData(2, ref iDynamic);
             DA.GetData(3, ref iMaterial);
             DA.GetData(4, ref iMass);
-
-            List<Mesh> meshes = new List<Mesh>();
-
-            List<IGH_GeometricGoo> group = new List<IGH_GeometricGoo>(iGroup.Objects);
-
-            for (int i = 0; i < group.Count; i++)
-            {
-                group[i].CastTo(out Mesh mesh);
-                meshes.Add(mesh);
-            }
+            DA.GetData(5, ref iInitialLinearVelocity);
+            DA.GetData(6, ref iInitialLAngularVelocity);
+            DA.GetDataList(7, iDisplayeMeshes);
 
             if (iDynamic)
-                DA.SetData(0, new PxGhRigidDynamicConvexMeshGroup(meshes, iFrame, iMaterial, (float) iMass, Vector3d.Zero, Vector3d.Zero));
+                DA.SetData(0, new PxGhRigidDynamiCompoundConvexMesh(iMeshes, iFrame, iMaterial, (float)iMass, iInitialLinearVelocity, iInitialLAngularVelocity));
             else
-                DA.SetData(0, new PxGhRigidStaticCompoundMesh(iFrame, meshes, iMaterial));
+                DA.SetData(0, new PxGhRigidStaticCompoundConvexMesh(iFrame, iMeshes, iMaterial));
         }
     }
 }

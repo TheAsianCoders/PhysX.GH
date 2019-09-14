@@ -10,14 +10,15 @@ using PhysX;
 using Rhino.Geometry;
 using Plane = Rhino.Geometry.Plane;
 
+
 namespace PhysX.GH.Kernel
 {
-    public class PxGhRigidStaticCompoundMesh : PxGhRigidStatic
+    public class PxGhRigidDynamiCompoundConvexMesh : PxGhRigidDynamic
     {
-        public PxGhRigidStaticCompoundMesh(Plane frame, List<Mesh> meshes, Material material)
+        public PxGhRigidDynamiCompoundConvexMesh(List<Mesh> meshes, Plane frame, Material material, float mass, Vector3d initialLinearVelocity, Vector3d initialAngularVelocity)
+            : base(frame, initialLinearVelocity, initialAngularVelocity)
         {
             DisplayMeshes = new List<Mesh>(meshes);
-            Actor.GlobalPose = frame.ToMatrix();
 
             foreach (Mesh mesh in DisplayMeshes)
             {
@@ -45,23 +46,13 @@ namespace PhysX.GH.Kernel
                 PxGhManager.Physics.CreateCooking().CookConvexMesh(convexMeshDescription, memoryStream);
                 memoryStream.Position = 0;
 
-                ConvexMeshGeometry convexMeshGeometry = new ConvexMeshGeometry(PxGhManager.Physics.CreateConvexMesh(memoryStream));
+                ConvexMesh convexMesh = PxGhManager.Physics.CreateConvexMesh(memoryStream);
+                ConvexMeshGeometry convexMeshGeometry = new ConvexMeshGeometry(convexMesh);
 
                 Actor.CreateShape(convexMeshGeometry, material);
             }
-        }
 
-
-        public override void GetDisplayGhMeshes(List<GH_Mesh> ghMeshes)
-        {
-            foreach (Mesh displayMesh in DisplayMeshes)
-                ghMeshes.Add(new GH_Mesh(displayMesh));
-        }
-
-
-        public override void GetDisplayMeshes(List<Mesh> meshes)
-        {
-            meshes.AddRange(DisplayMeshes);
+            Actor.SetMassAndUpdateInertia(mass);
         }
     }
 }

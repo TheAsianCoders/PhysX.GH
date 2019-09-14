@@ -4,6 +4,7 @@ using Rhino.Geometry;
 
 using Plane = Rhino.Geometry.Plane;
 
+
 namespace PhysX.GH
 {
     public static class Util
@@ -246,7 +247,7 @@ namespace PhysX.GH
             };
 
 
-        public static Transform ToRhinoTransform(this Plane p)
+        public static Transform ToTransform(this Plane p)
             =>new Transform
             {
                 M00 = p.XAxis.X, M01 = p.YAxis.X, M02 = p.ZAxis.X, M03 = p.OriginX,

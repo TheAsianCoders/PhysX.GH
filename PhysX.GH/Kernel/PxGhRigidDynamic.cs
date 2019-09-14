@@ -10,6 +10,7 @@ using Rhino.Geometry;
 
 using Plane = Rhino.Geometry.Plane;
 
+
 namespace PhysX.GH.Kernel
 {
     public abstract class PxGhRigidDynamic : PxGhRigidBody
@@ -22,7 +23,7 @@ namespace PhysX.GH.Kernel
 
         public Vector3 LinearVelocity => Actor.LinearVelocity;
         public Vector3 AngularVelocity => Actor.AngularVelocity;
-        public Plane Frame => Actor.GlobalPose.ToRhinoPlane();
+        public Plane Frame { get; private set; }
         public Transform Transform => Actor.GlobalPose.ToRhinoTransform();
 
 
@@ -58,7 +59,7 @@ namespace PhysX.GH.Kernel
 
         public override void GetDisplayGhMeshes(List<GH_Mesh> ghMeshes)
         {
-            Transform transform = Actor.GlobalPose.ToRhinoTransform();
+            Transform transform = Frame.ToTransform();
             foreach (Mesh displayMesh in DisplayMeshes)
             {
                 Mesh mesh = (Mesh)displayMesh.DuplicateShallow();
@@ -70,7 +71,7 @@ namespace PhysX.GH.Kernel
 
         public override void GetDisplayMeshes(List<Mesh> meshes)
         {
-            Transform transform = Actor.GlobalPose.ToRhinoTransform();
+            Transform transform = Frame.ToTransform();
             foreach (Mesh displayMesh in DisplayMeshes)
             {
                 Mesh mesh = (Mesh)displayMesh.DuplicateShallow();
@@ -78,5 +79,14 @@ namespace PhysX.GH.Kernel
                 meshes.Add(mesh);
             }
         }
+
+
+        internal void CacheFrame()
+        {
+            Frame = Actor.GlobalPose.ToRhinoPlane();
+        }
+
+
+        // TODO custom displayed meshes
     }
 }

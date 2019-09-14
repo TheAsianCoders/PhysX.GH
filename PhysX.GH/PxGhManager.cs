@@ -26,7 +26,7 @@ namespace PhysX.GH
             DefaultMaterial = Physics.CreateMaterial(0.5f, 0.5f, 0.5f);
             Scene = Physics.CreateScene();
 
-            Command.EndCommand += DisposePhysXOnGrasshopperUnloaded;
+            Command.BeginCommand += DisposePhysXOnGrasshopperUnloaded;
         }
 
 
@@ -34,10 +34,10 @@ namespace PhysX.GH
         {
             // Check if the Rhino command being executed is "GrasshopperUnloadPlugin" or "GrasshopperReloadAssemblies"
             if ((args.CommandId != new Guid("fc760140-ef99-42da-b2b4-2cdff7a4c8c4")) &&
-                 args.CommandId != new Guid("fc760140-ef99-42da-b2b4-2cdff7a4c8c4"))
+                 args.CommandId != new Guid("6b0eef26-3046-4f19-b4de-ffe6539d60e7"))
                 return;
 
-            Command.EndCommand -= DisposePhysXOnGrasshopperUnloaded;
+            Command.BeginCommand -= DisposePhysXOnGrasshopperUnloaded;
             Destroy();
         }
 

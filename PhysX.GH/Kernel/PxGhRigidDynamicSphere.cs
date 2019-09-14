@@ -7,6 +7,7 @@ using Grasshopper.Kernel.Types;
 using PhysX;
 using Rhino.Geometry;
 
+
 namespace PhysX.GH.Kernel
 {
     public class PxGhRigidDynamicSphere : PxGhRigidDynamic
@@ -18,5 +19,10 @@ namespace PhysX.GH.Kernel
             Mass = mass;
             DisplayMeshes.Add(Mesh.CreateFromSphere(new Sphere(Point3d.Origin, radius), 12, 6));
         }
+
+
+        public PxGhRigidDynamicSphere(Sphere sphere, Material material, float mass, Vector3d initialLinearVelocity, Vector3d initialAngularVelocity)
+            : this(sphere.EquitorialPlane, (float)sphere.Radius, material, mass, initialAngularVelocity, initialAngularVelocity)
+        {}
     }
 }

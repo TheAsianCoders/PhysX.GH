@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
@@ -10,6 +9,7 @@ using PhysX.GH.Kernel;
 using PhysX;
 using Rhino.Geometry;
 using Rhino.Render.Fields;
+
 
 namespace PhysX.GH.GrasshopperComponents
 {
@@ -53,6 +53,7 @@ namespace PhysX.GH.GrasshopperComponents
         {
             pManager.AddTextParameter("Info", "Info", "Info", GH_ParamAccess.item);
             pManager.AddGeometryParameter("Dynamics", "Dynamics", "Dynamics", GH_ParamAccess.list);
+            pManager.AddPlaneParameter("Dynamic Frames", "Dynamic Frames", "Dynamic Frames", GH_ParamAccess.list);
             pManager.AddGeometryParameter("Statics", "Statics", "Statics", GH_ParamAccess.list);
         }
 
@@ -65,11 +66,11 @@ namespace PhysX.GH.GrasshopperComponents
             bool iReset = false;
             bool iRun = false;
 
-            DA.GetData("Gravity", ref iGravity);
-            DA.GetData("Timestep", ref iTimestep);
-            DA.GetData("Steps", ref iSteps);
-            DA.GetData("Reset", ref iReset);
-            DA.GetData("Run", ref iRun);
+            DA.GetData(1, ref iGravity);
+            DA.GetData(2, ref iTimestep);
+            DA.GetData(3, ref iSteps);
+            DA.GetData(4, ref iReset);
+            DA.GetData(5, ref iRun);
 
 
             if (iReset || system == null)
@@ -77,8 +78,8 @@ namespace PhysX.GH.GrasshopperComponents
                 system = new GhPxSystem();
 
                 List<PxGhRigidBody> iRigidBodies = new List<PxGhRigidBody>();
-                foreach (GH_ObjectWrapper o in Params.Input[0].VolatileData.AllData(true))
-                    iRigidBodies.Add((PxGhRigidBody)o.Value);
+                foreach (var ghGoo in Params.Input[0].VolatileData.AllData(true))
+                    iRigidBodies.Add((PxGhRigidBody)(((GH_ObjectWrapper)ghGoo).Value));
 
                 foreach (PxGhRigidBody o in iRigidBodies)
                 {
@@ -94,7 +95,7 @@ namespace PhysX.GH.GrasshopperComponents
                     }
                 }
 
-                staticGhMeshes = system.GetRigidStaticDisplayGhMeshes();
+                staticGhMeshes = system.GetRigidStaticDisplayedGhMeshes();
             }
 
             info = "";
@@ -104,13 +105,14 @@ namespace PhysX.GH.GrasshopperComponents
                 ExpireSolution(true);
                 stopwatch.Restart();
                 system.Gravity = iGravity;
-                system.Update((float) iTimestep, iSteps);
+                system.Iterate((float) iTimestep, iSteps);
                 stopwatch.Stop();
             }
 
-            DA.SetData("Info", decimal.Round((decimal)stopwatch.Elapsed.TotalMilliseconds, 2) + "ms" + info);
-            DA.SetDataList("Statics", staticGhMeshes);
-            DA.SetDataList("Dynamics", system.GetRigidDynamicDisplayGhMeshes());
+            DA.SetData(0, decimal.Round((decimal)stopwatch.Elapsed.TotalMilliseconds, 2) + "ms" + info);
+            DA.SetDataList(1, system.GetRigidDynamicDisplayedGhMeshes());
+            DA.SetDataList(2, system.GetDynamicFramesAsGhPlanes());
+            DA.SetDataList(3, staticGhMeshes);
         }
     }
 }

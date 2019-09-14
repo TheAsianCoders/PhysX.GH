@@ -30,9 +30,9 @@ namespace PhysX.GH.Kernel
         {
             Point3d max = box.BoundingBox.Max;
             Point3d min = box.BoundingBox.Min;
-            float length = (float) (max.X - min.X);
-            float width = (float) (max.Y - min.Y);
-            float height = (float) (max.Z - min.Z);
+            float length = (float)(max.X - min.X);
+            float width = (float)(max.Y - min.Y);
+            float height = (float)(max.Z - min.Z);
             Actor.CreateShape(new BoxGeometry(length * 0.5f, width * 0.5f, height * 0.5f), material);
             Actor.GlobalPose = box.Plane.ToMatrix();
             DisplayMeshes.Add(Mesh.CreateFromBox(box, 1, 1, 1));

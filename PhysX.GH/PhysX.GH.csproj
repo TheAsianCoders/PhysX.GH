@@ -62,10 +62,10 @@
     <Compile Include="GrasshopperComponents\GhcPhysXMaterial.cs" />
     <Compile Include="GrasshopperComponents\GhcPhysXSphere.cs" />
     <Compile Include="Kernel\PxGhRigidBody.cs" />
-    <Compile Include="Kernel\PxGhRigidDynamicConvexMeshGroup.cs" />
+    <Compile Include="Kernel\PxGhRigidDynamicCompoundConvexMesh.cs" />
     <Compile Include="Kernel\PxGhRigidStatic.cs" />
     <Compile Include="Kernel\PxGhRigidDynamic.cs" />
-    <Compile Include="Kernel\PxGhRigidStaticCompoundMesh.cs" />
+    <Compile Include="Kernel\PxGhRigidStaticCompoundConvexMesh.cs" />
     <Compile Include="Kernel\PxGhRigidStaticSphere.cs" />
     <Compile Include="Kernel\PxGhRigidStaticBox.cs" />
     <Compile Include="Kernel\PxGhRigidDynamicSphere.cs" />

@@ -54,7 +54,7 @@ namespace PhysX.GH.Kernel
             hX = length * 0.5f;
             hY = width * 0.5f;
             hZ = height * 0.5f;
-            DisplayMeshes.Add(Mesh.CreateFromBox(new BoundingBox(-hX, hX, -hY, hY, -hZ, hZ), 1, 1, 1));
+            DisplayMeshes.Add(Mesh.CreateFromBox(new BoundingBox(-hX, -hY, -hZ, hX, hY, hZ), 1, 1, 1));
         }
     }
 }
