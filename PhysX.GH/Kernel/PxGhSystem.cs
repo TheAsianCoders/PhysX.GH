@@ -1,22 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using Grasshopper.Kernel.Types;
-using PhysX.GH.Kernel;
-using PhysX;
 using Rhino.Geometry;
+
 using Plane = Rhino.Geometry.Plane;
 
 
 namespace PhysX.GH.Kernel
 {
+    public enum MouseManipulationMode { Position = 0, Acceleration, Force };
+
     public class GhPxSystem
     {
+        internal double MouseManipulationStrength = 0.0;
+        internal MouseManipulationMode MouseManipulationMode = MouseManipulationMode.Acceleration;
+
         private readonly LinkedList<PxGhRigidStatic> ghPxRigidStatics = new LinkedList<PxGhRigidStatic>();
         private readonly LinkedList<PxGhRigidDynamic> ghPxRigidDynamics = new LinkedList<PxGhRigidDynamic>();
+
+        private RigidDynamic hitActor = null;
+        private Point3d hookPoint;
+        private bool checkForHit = true;
+
+        internal Point3d HookPoint = Point3d.Unset;
+        internal Point3d HookPointOnMouseLine = Point3d.Unset;
+
+
+        public Vector3d Gravity
+        {
+            get { return PxGhManager.Scene.Gravity.ToRhinoVector(); }
+            set { PxGhManager.Scene.Gravity = value.ToSystemVector(); }
+        }
 
 
         public GhPxSystem()
@@ -25,10 +39,53 @@ namespace PhysX.GH.Kernel
         }
 
 
-        public Vector3d Gravity
+        private void ProcessMouseManipulation()
         {
-            get { return PxGhManager.Scene.Gravity.ToRhinoVector(); }
-            set { PxGhManager.Scene.Gravity = value.ToSystemVector(); }
+            if (!MouseTracker.LeftMousePressed)
+            {
+                checkForHit = true;
+                hitActor = null;
+
+                HookPoint = Point3d.Unset;
+                HookPointOnMouseLine = Point3d.Unset;
+            }
+            else
+            {
+                if (checkForHit)
+                {
+                    checkForHit = false;
+                    Vector3d mouseLineDirection = MouseTracker.MouseLine.Direction;
+                    mouseLineDirection.Unitize();
+                    PxGhManager.Scene.Raycast(
+                        MouseTracker.MouseLine.From.ToSystemVector(),
+                        mouseLineDirection.ToSystemVector(),
+                        9999f,
+                        999,
+                        HitCallback,
+                        HitFlag.Position);
+                }
+
+                if (hitActor != null)
+                {
+                    Rhino.Geometry.Plane frame = hitActor.GlobalPose.ToRhinoPlane();
+                    HookPoint = frame.Origin + frame.XAxis * hookPoint.X + frame.YAxis * hookPoint.Y + frame.ZAxis * hookPoint.Z;
+                    HookPointOnMouseLine = MouseTracker.MouseLine.ClosestPoint(HookPoint, false);
+
+                    if (MouseManipulationMode == MouseManipulationMode.Position)
+                    {
+                        frame.Origin = HookPointOnMouseLine + (frame.Origin - HookPoint);
+                        hitActor.GlobalPose = frame.ToMatrix();
+                        hitActor.LinearVelocity = Vector3.Zero;
+                        hitActor.AddForceAtLocalPosition((hitActor.Mass * -Gravity).ToSystemVector(), hookPoint.ToSystemVector(), ForceMode.Force, true);
+                    }
+                    else
+                    {
+                        Vector3d force = (HookPointOnMouseLine - HookPoint) * MouseManipulationStrength *
+                                         (MouseManipulationMode == MouseManipulationMode.Acceleration ? hitActor.Mass : 1.0);
+                        hitActor.AddForceAtLocalPosition(force.ToSystemVector(), hookPoint.ToSystemVector(), ForceMode.Force, true);
+                    }
+                }
+            }
         }
 
 
@@ -42,6 +99,8 @@ namespace PhysX.GH.Kernel
 
             foreach (PxGhRigidDynamic o in ghPxRigidDynamics)
                 o.CacheFrame();
+
+            if (MouseManipulationStrength > 0.0) ProcessMouseManipulation();
         }
 
 
@@ -113,6 +172,21 @@ namespace PhysX.GH.Kernel
             foreach (PxGhRigidDynamic o in ghPxRigidDynamics)
                 ghPlanes.Add(new GH_Plane(o.Frame));
             return ghPlanes;
+        }
+
+
+        private bool HitCallback(RaycastHit[] hits)
+        {
+            foreach (RaycastHit hit in hits)
+            {
+                if (!(hit.Actor is RigidDynamic)) continue;
+                hitActor = (RigidDynamic)hit.Actor;
+                Rhino.Geometry.Plane frame = hitActor.GlobalPose.ToRhinoPlane();
+                Vector3d v = hit.Position.ToRhinoPoint() - frame.Origin;
+                hookPoint = new Point3d(v * frame.XAxis, v * frame.YAxis, v * frame.ZAxis);
+                return true;
+            }
+            return false;
         }
     }
 }

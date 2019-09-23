@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Grasshopper;
-using PhysX;
-using Rhino;
 using Rhino.Commands;
+
 
 namespace PhysX.GH
 {
-    static class PxGhManager
+    public static class PxGhManager
     {
         internal static Foundation Foundation;
         internal static Physics Physics;
-        internal static Scene Scene;
+        public static Scene Scene { get; private set; }
         internal static Material DefaultMaterial;
 
 

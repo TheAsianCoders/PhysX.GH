@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Numerics;
-using Grasshopper;
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
-using PhysX.GH;
 using PhysX.GH.Kernel;
-using PhysX;
 using Rhino.Geometry;
-
-using Plane = Rhino.Geometry.Plane;
 
 
 namespace PhysX.GH.GrasshopperComponents
@@ -41,8 +33,10 @@ namespace PhysX.GH.GrasshopperComponents
             pManager.AddNumberParameter("Mass", "Mass", "Mass", GH_ParamAccess.item, 1.0);
             pManager.AddVectorParameter("Initial Linear Velocity", "Linear Vel.", "Initial linear velocity", GH_ParamAccess.item, Vector3d.Zero);
             pManager.AddVectorParameter("Initial Angular Velocity", "Angular Vel.", "Initial angular velocity", GH_ParamAccess.item, Vector3d.Zero);
+            pManager.AddNumberParameter("Linear Damping", "Linear Damp", "Linear Damping", GH_ParamAccess.item, 1.0);
+            pManager.AddNumberParameter("Angular Damping", "Angular Damp", "Angular Damping", GH_ParamAccess.item, 1.0);
             pManager.AddMeshParameter("Displayed Meshes (Optional)", "Displayed Meshes", "Custom displayed meshes", GH_ParamAccess.list);
-            pManager[6].Optional = true;
+            pManager[8].Optional = true;
         }
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
@@ -58,7 +52,9 @@ namespace PhysX.GH.GrasshopperComponents
             double iMass = double.NaN;
             Vector3d iInitialLinearVelocity = Vector3d.Unset;
             Vector3d iInitialLAngularVelocity = Vector3d.Unset;
-            List<Mesh> iDisplayeMeshes = new List<Mesh>();
+            double iLinearDamping = double.NaN;
+            double iAngularDamping = double.NaN;
+            List<Mesh> iDisplayedMeshes = new List<Mesh>();
 
             DA.GetData(0, ref iBox);
             DA.GetData(1, ref iDynamic);
@@ -66,10 +62,17 @@ namespace PhysX.GH.GrasshopperComponents
             DA.GetData(3, ref iMass);
             DA.GetData(4, ref iInitialLinearVelocity);
             DA.GetData(5, ref iInitialLAngularVelocity);
-            DA.GetDataList(6, iDisplayeMeshes);
+            DA.GetData(6, ref iLinearDamping);
+            DA.GetData(7, ref iAngularDamping);
+            DA.GetDataList(8, iDisplayedMeshes);
 
             if (iDynamic)
-                DA.SetData(0, new PxGhRigidDynamicBox(iBox, iMaterial, (float)iMass, iInitialLinearVelocity, iInitialLAngularVelocity));
+            {
+                PxGhRigidDynamic rigidObject = new PxGhRigidDynamicBox(iBox, iMaterial, (float)iMass, iInitialLinearVelocity, iInitialLAngularVelocity);
+                rigidObject.Actor.LinearDamping = (float)iLinearDamping;
+                rigidObject.Actor.AngularDamping = (float)iAngularDamping;
+                DA.SetData(0, rigidObject);
+            }
             else
                 DA.SetData(0, new PxGhRigidStaticBox(iBox, iMaterial));
         }

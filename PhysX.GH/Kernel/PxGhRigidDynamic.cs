@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using Grasshopper.Kernel.Types;
-using PhysX;
 using Rhino.Geometry;
 
 using Plane = Rhino.Geometry.Plane;
@@ -15,7 +10,7 @@ namespace PhysX.GH.Kernel
 {
     public abstract class PxGhRigidDynamic : PxGhRigidBody
     {
-        internal RigidDynamic Actor = PxGhManager.Physics.CreateRigidDynamic();
+        public RigidDynamic Actor { get; } = PxGhManager.Physics.CreateRigidDynamic();
         protected readonly Matrix4x4 InitialGlobalPose = Matrix4x4.Identity;
         protected readonly Vector3 InitialLinearVelocity = Vector3.Zero;
         protected readonly Vector3 InitialAngularVelocity = Vector3.Zero;

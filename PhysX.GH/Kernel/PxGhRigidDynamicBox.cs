@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using Grasshopper.Kernel.Types;
-using PhysX;
-using Rhino.Geometry;
+﻿using Rhino.Geometry;
+
 using Plane = Rhino.Geometry.Plane;
+
 
 namespace PhysX.GH.Kernel
 {

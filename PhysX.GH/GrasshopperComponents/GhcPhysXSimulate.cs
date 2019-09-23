@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Numerics;
-using Grasshopper;
+using System.Drawing;
+using System.Windows.Forms;
+using GH_IO.Serialization;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using PhysX.GH.Kernel;
-using PhysX;
+using Rhino.Display;
 using Rhino.Geometry;
-using Rhino.Render.Fields;
 
 
 namespace PhysX.GH.GrasshopperComponents
@@ -18,7 +18,13 @@ namespace PhysX.GH.GrasshopperComponents
         private GhPxSystem system;
         private Stopwatch stopwatch = new Stopwatch();
         private List<GH_Mesh> staticGhMeshes;
-        string info;
+        private string info;
+        private bool outputDynamicFrames = true;
+        private bool visualizeMouseManipulation = true;
+        private bool asynchronous = false;
+
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.Solver;
+        public override Guid ComponentGuid => new Guid("{776F3532-145A-4F5D-BB95-2B81B1CC936C}");
 
 
         public GhcPhysXSimulate()
@@ -29,12 +35,7 @@ namespace PhysX.GH.GrasshopperComponents
                 "PhysX",
                 "PhysX")
         {
-
         }
-
-
-        protected override System.Drawing.Bitmap Icon => Properties.Resources.Solver;
-        public override Guid ComponentGuid => new Guid("{776F3532-145A-4F5D-BB95-2B81B1CC936C}");
 
 
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
@@ -43,9 +44,10 @@ namespace PhysX.GH.GrasshopperComponents
             pManager.AddVectorParameter("Gravity", "Gravity", "Gravity", GH_ParamAccess.item, new Vector3d(0.0, 0.0, -9.8));
             pManager.AddNumberParameter("Timestep", "Timestep", "Timestep", GH_ParamAccess.item, 0.01);
             pManager.AddIntegerParameter("Steps", "Steps", "Steps", GH_ParamAccess.item, 10);
+            pManager.AddIntegerParameter("Mouse Manipulation Mode", "Mouse Mode", "0 = Force, 1 = Acceleration", GH_ParamAccess.item, 0);
+            pManager.AddNumberParameter("Mouse Manipulation Strength", "Mouse Strength", "Mouse Manipulation Strength", GH_ParamAccess.item, 50.0);
             pManager.AddBooleanParameter("Reset", "Reset", "Reset", GH_ParamAccess.item, true);
             pManager.AddBooleanParameter("Run", "Run", "Run", GH_ParamAccess.item, false);
-
         }
 
 
@@ -63,15 +65,18 @@ namespace PhysX.GH.GrasshopperComponents
             Vector3d iGravity = Vector3d.Unset;
             double iTimestep = double.NaN;
             int iSteps = 10;
+            int iMouseManipulationMode = 0;
+            double iMouseManipulationStrength = double.NaN;
             bool iReset = false;
             bool iRun = false;
 
             DA.GetData(1, ref iGravity);
             DA.GetData(2, ref iTimestep);
             DA.GetData(3, ref iSteps);
-            DA.GetData(4, ref iReset);
-            DA.GetData(5, ref iRun);
-
+            DA.GetData(4, ref iMouseManipulationMode);
+            DA.GetData(5, ref iMouseManipulationStrength);
+            DA.GetData(6, ref iReset);
+            DA.GetData(7, ref iRun);
 
             if (iReset || system == null)
             {
@@ -105,14 +110,72 @@ namespace PhysX.GH.GrasshopperComponents
                 ExpireSolution(true);
                 stopwatch.Restart();
                 system.Gravity = iGravity;
-                system.Iterate((float) iTimestep, iSteps);
+                system.MouseManipulationStrength = iMouseManipulationStrength;
+                system.MouseManipulationMode = (MouseManipulationMode)iMouseManipulationMode;
+                system.Iterate((float)iTimestep, iSteps);
                 stopwatch.Stop();
             }
 
             DA.SetData(0, decimal.Round((decimal)stopwatch.Elapsed.TotalMilliseconds, 2) + "ms" + info);
             DA.SetDataList(1, system.GetRigidDynamicDisplayedGhMeshes());
-            DA.SetDataList(2, system.GetDynamicFramesAsGhPlanes());
+            if (outputDynamicFrames) DA.SetDataList(2, system.GetDynamicFramesAsGhPlanes());
             DA.SetDataList(3, staticGhMeshes);
+        }
+
+
+        public override void DrawViewportWires(IGH_PreviewArgs args)
+        {
+            base.DrawViewportWires(args);
+
+            if (visualizeMouseManipulation)
+            {
+                args.Display.DrawPoint(system.HookPoint, PointStyle.RoundSimple, 5, Color.Teal);
+                args.Display.DrawPoint(system.HookPointOnMouseLine, PointStyle.RoundSimple, 5, Color.Teal);
+                args.Display.DrawLine(system.HookPoint, system.HookPointOnMouseLine, Color.Teal, 2);
+            }
+        }
+
+
+        protected override void AppendAdditionalComponentMenuItems(ToolStripDropDown menu)
+        {
+            Menu_AppendItem(
+                menu,
+                "Output dynamic frames",
+                (s, e) => { outputDynamicFrames = !outputDynamicFrames; },
+                true,
+                outputDynamicFrames);
+
+            Menu_AppendItem(
+                menu,
+                "Visualize mouse manipulation",
+                (s, e) => { visualizeMouseManipulation = !visualizeMouseManipulation; },
+                true,
+                visualizeMouseManipulation);
+
+            Menu_AppendItem(
+                menu,
+                "Asynchronous",
+                (s, e) => { asynchronous = !asynchronous; },
+                true,
+                asynchronous);
+        }
+
+
+        public override bool Write(GH_IWriter writer)
+        {
+            writer.SetBoolean("outputDynamicFrames", outputDynamicFrames);
+            writer.SetBoolean("visualizeMouseManipulation", visualizeMouseManipulation);
+            writer.SetBoolean("asynchronous", asynchronous);
+            return base.Write(writer);
+        }
+
+
+        public override bool Read(GH_IReader reader)
+        {
+            outputDynamicFrames = reader.GetBoolean("outputDynamicFrames");
+            visualizeMouseManipulation = reader.GetBoolean("visualizeMouseManipulation");
+            asynchronous = reader.GetBoolean("asynchronous");
+            return base.Read(reader);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace PhysX.GH.Kernel
 
 
         public PxGhRigidDynamicSphere(Sphere sphere, Material material, float mass, Vector3d initialLinearVelocity, Vector3d initialAngularVelocity)
-            : this(sphere.EquitorialPlane, (float)sphere.Radius, material, mass, initialAngularVelocity, initialAngularVelocity)
+            : this(sphere.EquatorialPlane, (float)sphere.Radius, material, mass, initialAngularVelocity, initialAngularVelocity)
         {}
     }
 }
