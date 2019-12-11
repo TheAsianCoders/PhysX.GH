@@ -11,7 +11,7 @@ namespace PhysX.GH.Kernel
     public abstract class PxGhRigidDynamic : PxGhRigidBody
     {
         public RigidDynamic Actor { get; } = PxGhManager.Physics.CreateRigidDynamic();
-        protected readonly Matrix4x4 InitialGlobalPose = Matrix4x4.Identity;
+        protected readonly Matrix4x4 InitialGlobalPose;
         protected readonly Vector3 InitialLinearVelocity = Vector3.Zero;
         protected readonly Vector3 InitialAngularVelocity = Vector3.Zero;
 

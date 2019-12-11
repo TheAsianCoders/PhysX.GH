@@ -34,6 +34,8 @@ namespace PhysX.GH.Kernel
 
         protected override void OnMouseUp(MouseCallbackEventArgs e)
         {
+            if (Control.ModifierKeys != Keys.Alt || e.Button != MouseButtons.Left) return;
+
             LeftMousePressed = false;
             JustReleased = true;
             e.Cancel = true; // This prevents Rhino from unwantedly going into drag-and-select mode when the left mouse is being pressed while inside the viewport

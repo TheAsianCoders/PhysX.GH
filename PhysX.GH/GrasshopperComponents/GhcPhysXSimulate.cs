@@ -16,7 +16,7 @@ namespace PhysX.GH.GrasshopperComponents
     public class GhcPhysXSimulate : GH_Component
     {
         private GhPxSystem system;
-        private Stopwatch stopwatch = new Stopwatch();
+        private readonly Stopwatch stopwatch = new Stopwatch();
         private List<GH_Mesh> staticGhMeshes;
         private string info;
         private bool outputDynamicFrames = true;
@@ -87,18 +87,18 @@ namespace PhysX.GH.GrasshopperComponents
                     iRigidBodies.Add((PxGhRigidBody)(((GH_ObjectWrapper)ghGoo).Value));
 
                 foreach (PxGhRigidBody o in iRigidBodies)
-                {
-                    if (o is PxGhRigidDynamic)
+                    switch (o)
                     {
-                        PxGhRigidDynamic d = (PxGhRigidDynamic)o;
-                        system.AddRigidDynamic(d);
-                        d.Reset();
+                        case PxGhRigidDynamic rigidDynamic:
+                        {
+                            system.AddRigidDynamic(rigidDynamic);
+                            rigidDynamic.Reset();
+                            break;
+                        }
+                        case PxGhRigidStatic rigidStatic:
+                            system.AddRigidStatic(rigidStatic);
+                            break;
                     }
-                    else if (o is PxGhRigidStatic)
-                    {
-                        system.AddRigidStatic((PxGhRigidStatic)o);
-                    }
-                }
 
                 staticGhMeshes = system.GetRigidStaticDisplayedGhMeshes();
             }
