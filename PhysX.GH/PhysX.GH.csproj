@@ -18,7 +18,7 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>..\bin\PhysX.GH\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -154,8 +154,9 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>
-      Copy "$(TargetPath)" "%AppData%\Grasshopper\Libraries\PhysX.GH\PhysX.GH.gha"
-    </PostBuildEvent>
+      Copy "$(TargetPath)" "%25AppData%25\Grasshopper\Libraries\PhysX.GH\PhysX.GH.gha"
+      Copy "$(TargetPath)" "$(TargetDir)\PhysX.GH.gha"
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>
