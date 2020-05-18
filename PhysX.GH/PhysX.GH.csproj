@@ -82,7 +82,6 @@
     <Compile Include="Kernel\PxGhRigidStaticBox.cs" />
     <Compile Include="Kernel\PxGhRigidDynamicSphere.cs" />
     <Compile Include="Kernel\PxGhRigidDynamicBox.cs" />
-    <Compile Include="Kernel\PxGhSpring.cs" />
     <Compile Include="Kernel\PxGhSystem.cs" />
     <Compile Include="GrasshopperComponents\GhcPhysXSimulate.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
